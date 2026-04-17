@@ -1,0 +1,11 @@
+"Model","Resistance","Estimate","StdError","PercentEffect"
+"scn_covariate","Peking",-262.2,75.8,-4.6
+"scn_covariate","PI88788",-325.7,75.7,-5.7
+"ar1","Peking",-249.8,75.9,-4.4
+"ar1","PI88788",-309.1,76.6,-5.4
+"ar1_nugget","Peking",-257.6,72.1,-4.5
+"ar1_nugget","PI88788",-288.2,70,-5
+"ta","Peking",-319,71.7,-5.5
+"ta","PI88788",-312.1,67.2,-5.4
+"tps","Peking",-286.9,72.5,-5.1
+"tps","PI88788",-299.1,67.5,-5.3

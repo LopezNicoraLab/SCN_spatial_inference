@@ -1,110 +1,78 @@
-# Field Evaluation of Integrated Soybean Cyst Nematode Management Using Spatially Informed Mixed Models 
+# Evaluating Integrated Soybean Cyst Nematode Management Using Spatially Informed Mixed Models 
 
-## Citation
-The following source code accompanies our publication, to be submitted to *Phytopathology* Journal:
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Reproducible](https://img.shields.io/badge/reproducible-yes-brightgreen.svg)](#reproducibility)
+[![Maintained by](https://img.shields.io/badge/maintained%20by-LopezNicoraLab-red.svg)](https://github.com/LopezNicoraLab)
+ 
+---
+ 
+## Associated Publication
+ 
+Garnica, V. C. and Lopez-Nicora, H. D.  
+Field evaluation of integrated soybean cyst nematode management using spatially informed mixed models.  
+**Phytopathology** (*Under review*)
+ 
+---
 
+## Repository Purpose
+ 
+This repository contains data and reproducible analysis scripts supporting the associated manuscript. The study evaluates integrated management strategies for soybean cyst nematode (SCN) across field trials conducted in 2022 and 2023 in Ohio, using mixed models with spatial covariance structures to account for within-field heterogeneity. The analysis quantifies treatment effects on SCN reproduction factor (*Rf*) and soybean yield, estimates cultivar-specific damage coefficients relating initial SCN population density to yield loss, and compares spatial model structures to identify the best-fitting covariance specification for each trial.
+ 
+All figures, tables, and statistical outputs are generated programmatically from the scripts provided.
+
+## Repository Structure
+ 
 ```
-@article{garnica202x,
-  author = {Vinicius C. Garnica and Horacio D. Lopez-Nicora},
-  title = {Field evaluation of integrated soybean cyst nematode management using spatially informed mixed models},
-  year = {202x},
-  doi = {xxx},
-  journal = {xxx}
-}
+├── 01_data
+│   └── pioneers.csv                 → Trial dataset
+├── 02_code
+│   ├── spatial_modeling_yld.qmd     → Yield response analysis (2022, 2023, multi-year)
+│   ├── spatial_modeling_yld.html    → Rendered HTML output
+│   ├── spatial_modeling_rf.qmd      → SCN reproduction factor analysis
+│   ├── spatial_modeling_rf.html     → Rendered HTML output
+│   └── spatial_modeling_rf.html     → Custom functions for spatial modeling and contrasts
+├── 03_outputs
+│   ├── cult_int/                → Cultivar and cultivar × seed treatment interaction estimates
+│   ├── damage/                  → Damage function coefficients (Pi–yield relationships)
+│   ├── model_selection/         → Spatial model comparison metrics (AIC/BIC)
+│   ├── seed_trt/                → Seed treatment effect estimates
+│   ├── variances/               → Variance component estimates
+│   └── fig_1–4.tiff, fig_S1     → Manuscript figures
 ```
+ 
+---
 
-## Introduction
-
-This repository contains data and code for analyzing the effectiveness of integrated management 
-strategies for soybean cyst nematode (SCN) using spatially informed mixed models. The study evaluates 
-SCN population dynamics (reproduction factor, *Rf*) and yield responses across field trials 
-conducted in 2022 and 2023 in Ohio, incorporating spatial autocorrelation structures to 
-account for within-field heterogeneity and improve estimation precision.
-
-The analysis employs advanced mixed-model frameworks to:
-
-* Model spatial dependencies in field data using various covariance structures
-* Evaluate the performance of SCN management strategies including resistant cultivars and seed treatments
-* Account for plot-level spatial trends and environmental heterogeneity
-* Quantify cultivar-specific damage coefficients relating initial SCN population to yield loss
-* Provide robust estimates of treatment effects adjusted for spatial autocorrelation
-
-This repository outlines the complete analysis pipeline, detailing the necessary Quarto markdown documents, R scripts, and data files for reproducing the study. The folder structure is organized as follows:
-
-```
-SCN_spatial_inference/
-├── spatial_modeling_rf.qmd              # Analysis of SCN reproduction factor
-├── spatial_modeling_rf.html             # Rendered HTML output for rf analysis
-├── spatial_modeling_yld.qmd             # Analysis of soybean yield responses
-├── spatial_modeling_yld.html            # Rendered HTML output for yield analysis
-├── pioneers.csv                         # Dataset
-├── functions.R                          # Custom functions for spatial modeling
-├── results/
-│     ├── cult_int/                      # Cultivar and cultivar-by-seed treatment interaction estimates
-│     │     ├─── cult_int_2022.csv
-│     │     ├─── cult_int_2022_rf.csv
-│     │     ├─── cult_int_2023.csv
-│     │     ├─── cult_int_2023_rf.csv
-│     │     ├─── cult_int_multi.csv      # Multi-year analysis
-│     │     └─── cult_int_multi_rf.csv
-│     ├── damage/                        # Damage function coefficients
-│     │     ├─── coef_damage_2022.csv
-│     │     ├─── coef_damage_2023.csv
-│     │     └─── coef_damage_multi.csv
-│     ├── model_selection/               # Spatial model comparison
-│     │     ├─── comparison_2022.csv
-│     │     ├─── comparison_2022_rf.csv
-│     │     ├─── comparison_2023.csv
-│     │     ├─── comparison_2023_rf.csv
-│     │     ├─── comparison_multi.csv
-│     │     └─── comparison_multi_rf.csv
-│     ├── seed_trt/                      # Seed treatment effect estimates
-│     │     ├─── seed_trt_2022.csv
-│     │     ├─── seed_trt_2022_rf.csv
-│     │     ├─── seed_trt_2023.csv
-│     │     ├─── seed_trt_2023_rf.csv
-│     │     ├─── seed_trt_multi.csv
-│     │     └─── seed_trt_multi_rf.csv
-│     ├── variances/                     # Variance component estimates
-│     │     ├─── var_table_2022.csv
-│     │     ├─── var_table_2022_rf.csv
-│     │     ├─── var_table_2023.csv
-│     │     ├─── var_table_2023_rf.csv
-│     │     ├─── var_table_multi.csv
-│     │     └─── var_table_multi_rf.csv
-│     ├── drawing.svg                    # Conceptual diagram
-│     ├── fig_1.tiff
-│     ├── fig_2.tiff
-│     ├── fig_3.tiff
-│     ├── fig_4.tiff
-│     └── fig_S1.tiff
-└── functions.R
-
-```
+ 
 ## Analysis Pipeline
+ 
+**Yield response** (`spatial_modeling_yld.qmd`): Fits mixed models with alternative spatial covariance structures to soybean yield data from 2022, 2023, and combined multi-year trials. Exports model comparison metrics, treatment effect estimates, variance components, and cultivar-specific damage coefficients.
+ 
+**Reproduction factor** (`spatial_modeling_rf.qmd`): Analyzes SCN reproduction factor (*Rf* = log(*Pf*/*Pi*)) using the same spatial modeling framework as the yield analysis.
+ 
+**Custom functions** (`functions.R`): Defines functions for model evaluation (`icREML` for AIC/BIC computation), contrast estimation with optional back-transformation (`st_contrasts`, `cult_contrasts_ss`, `cult_contrasts_ms`), and spatial basis matrix construction for tensor-product spline modeling (`spatial_matrix`).
+ 
+---
+ 
+## Reproducibility Instructions
 
-### Yield Response Analysis (`spatial_modeling_yld.qmd`)
+To reproduce results:
 
-This Quarto document analyzes soybean yield data from 2022, 2023, and combined multi-year trials. The 
-workflow imports and prepares yield data, fits mixed models with different spatial structures, and 
-exports CSV files with model comparison metrics (AIC/BIC), treatment effect estimates (saved in `cult_int/` and `seed_trt/`), and 
-variance components (saved in `variances/`).
+1. Clone this repository.
+2. Install required R packages, including `ASReml-R` (license required), `tidyverse`, and dependencies listed at the top of each `.qmd` file.
+3. Render `spatial_modeling_yld.qmd` and `spatial_modeling_rf.qmd`. All outputs in `results/` will regenerate automatically.
 
-### Reproduction Factor Analysis (`spatial_modeling_rf.qmd`)
+**Note:** `ASReml-R` requires a valid license from VSN International. The `TPSbits` package (Welham 2022) is not available on CRAN; it was obtained directly from the package author (S. J. Welham, stats4biol@gmail.com). All other dependencies are available from CRAN.
 
-This Quarto document analyzes the SCN reproduction factor (*Rf = log(P_f/P_i)*) using the same modeling framework as the yield analysis.
-
-### Custom Functions (`functions.R`)
-
-This code defines a suite of R functions to evaluate ASReml-R models and extract biologically interpretable contrasts. The `icREML` function 
-computes AIC and BIC from a list of fitted models using restricted maximum likelihood. The `st_contrasts`, `cult_contrasts_ss`, and `cult_contrasts_ms` 
-functions estimate and optionally back-transform contrasts for seed treatment and cultivar effects, while `spatial_matrix` constructs 
-spatial basis matrices for tensor-product spline modeling across field trial sites.
-
-## References
-
-* Gilmour, A. R. and Cullis, B. R. (1997). Accounting for natural and extraneous variation in the analysis of field experiments. Journal of Agricultural, Biological, and Environmental Statistics, 2, 269–293.
-
-* Velazco, J. G., Rodríguez-Álvarez, M. X., Boer, M. P., Jordan, D. R., Eilers, P. H. C., Malosetti, M., and van Eeuwijk, F. A. (2017). Modelling spatial trends in sorghum breeding field trials using a two-dimensional P-spline mixed model. Theoretical and Applied Genetics, 130, 1375–1392.
-
-* Welham, S. J. (2022). TPSbits: Creates structures to enable fitting and examination of 2D tensor-product splines using ASReml-R (R package version 1.0.3) [Computer software]. Retrieved August 4, 2025, from https://mmade.org/tpsbits.
+---
+ 
+## Data Availability
+ 
+The trial dataset (`pioneers.csv`) contains plot-level observations from the 2022 and 2023 field trials, including initial and final SCN egg counts, soybean yield, cultivar and seed treatment assignments, and row/column indexes.
+ 
+---
+ 
+## Citation
+ 
+Please cite the associated publication and this archived repository (see `CITATION.cff`).
+ 
+---
