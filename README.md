@@ -8,8 +8,7 @@
  
 ## Associated Publication
  
-Garnica, V. C. and Lopez-Nicora, H. D.  
-Field evaluation of integrated soybean cyst nematode management using spatially informed mixed models.  
+Garnica, V. C. and Lopez-Nicora, H. D. Field evaluation of integrated soybean cyst nematode management using spatially informed mixed models.  
 **Phytopathology** (*Under review*)
  
 ---
@@ -37,7 +36,7 @@ All figures, tables, and statistical outputs are generated programmatically from
 │   ├── model_selection/         → Spatial model comparison metrics (AIC/BIC)
 │   ├── seed_trt/                → Seed treatment effect estimates
 │   ├── variances/               → Variance component estimates
-│   └── fig_1–4.tiff, fig_S1     → Manuscript figures
+│   └── fig_1–5.tiff, fig_S1     → Manuscript figures
 ```
  
 ---
@@ -47,9 +46,9 @@ All figures, tables, and statistical outputs are generated programmatically from
  
 **Yield response** (`spatial_modeling_yld.qmd`): Fits mixed models with alternative spatial covariance structures to soybean yield data from 2022, 2023, and combined multi-year trials. Exports model comparison metrics, treatment effect estimates, variance components, and cultivar-specific damage coefficients.
  
-**Reproduction factor** (`spatial_modeling_rf.qmd`): Analyzes SCN reproduction factor (*Rf* = log(*Pf*/*Pi*)) using the same spatial modeling framework as the yield analysis.
+**Reproduction factor** (`spatial_modeling_rf.qmd`): Analyzes SCN reproduction factor (*Rf* = ln(*Pf*/*Pi*)) using the same spatial modeling framework as the yield analysis.
  
-**Custom functions** (`functions.R`): Defines functions for model evaluation (`icREML` for AIC/BIC computation), contrast estimation with optional back-transformation (`st_contrasts`, `cult_contrasts_ss`, `cult_contrasts_ms`), and spatial basis matrix construction for tensor-product spline modeling (`spatial_matrix`).
+**Custom functions** (`functions.R`): Defines functions for model evaluation (`icREML` for AIC computation), contrast estimation with optional back-transformation (`st_contrasts`, `cult_contrasts_ss`, `cult_contrasts_ms`), and spatial basis matrix construction for tensor-product spline modeling (`spatial_matrix`).
  
 ---
  

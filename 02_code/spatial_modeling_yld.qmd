@@ -16,7 +16,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-[GitHub Repository](https://github.com/vcgarnica/SCN_spatial_inference)  
+[GitHub Repository](https://github.com/LopezNicoraLab/SCN_spatial_inference)  
 
 This file contains the full R workflow for processing and analyzing raw data, as well as generating figures for the manuscript. The Rmarkdown file can be downloaded from the *Code* drop down menu (top right).
 
@@ -57,6 +57,7 @@ knitr::opts_chunk$set(
 ```{r,message=FALSE,error=FALSE}
 
 required_packages = c(
+  "here",         # Locating files
   "tidyverse",    # Data manipulation and visualization
   "asreml",       # Mixed modeling
   "asremlPlus",   # Model diagnostics
@@ -71,7 +72,7 @@ invisible(lapply(required_packages, library, character.only = TRUE))
 asreml.options(gammaPar = TRUE)
 theme_set(theme_minimal(base_size = 12))
 
-source("functions.r")
+source(here("02_code","functions.r"))
 
 cc <- colorRampPalette(rev(c("#6e7f6e", "#ccd5ae",  "#d4dcd5",  "#adcbe3", "#457b9d")))(15)
 
@@ -109,7 +110,7 @@ SCN population densities were quantified at three critical time points: pre-plan
 
 
 ```{r}
-dat = read_csv("pioneers.csv", show_col_types = FALSE)
+dat = read_csv(here("01_data","pioneers.csv"), show_col_types = FALSE)
 
 dat = dat %>%
   mutate(
@@ -230,7 +231,7 @@ p3 = dat %>%
   )+theme(legend.position=c("top"))
 
 
-ggsave("results/fig_1.tiff",units="in", width=7, height=9,bg = "white")
+ggsave(here("03_outputs","fig_1.tiff"),units="in", width=7, height=9,bg = "white")
 
 ```
 **Figure 1**. Distributions of soybean yield and soybean cyst nematode (SCN) reproduction under different resistance sources and seed treatments. Panels **A** and **B** show boxplots of grain yield and SCN reproduction factor ($R_f$), respectively, stratified by resistance source. Panel **C** illustrates the association between initial SCN density ($P_i$) and yield. Resistance sources are color-coded: blue for Peking-derived and red for PI 88788-derived cultivars.
@@ -571,7 +572,7 @@ models_2022 = list(
   "tps"=tps)
 
 comparison_2022 = icREML(models_2022)
-write.csv(comparison_2022, file = "results/model_selection/comparison_2022.csv", row.names = FALSE)
+write.csv(comparison_2022, file = here("03_outputs","model_selection", "comparison_2022.csv"), row.names = FALSE)
 ```
 
 ```{r,echo=FALSE}
@@ -593,7 +594,7 @@ seed_trt=purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error) %>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(seed_trt, file ="results/seed_trt/seed_trt_2022.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt", "seed_trt_2022.csv"), row.names = FALSE)
 
 eff_st_2022 = purrr::map2_dfr(
   models_2022, names(models_2022),
@@ -619,7 +620,7 @@ cult = purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(cult, file ="results/cult_int/cult_int_2022.csv", row.names = FALSE)
+write.csv(cult, file =here("03_outputs","cult_int", "cult_int_2022.csv"), row.names = FALSE)
 
 
 eff_cult_2022 = purrr::map2_dfr(
@@ -644,7 +645,7 @@ var_table = imap_dfr(models_2022, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file ="results/variances/var_table_2022.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs","variances", "var_table_2022.csv"), row.names = FALSE)
 
 ```
 
@@ -659,7 +660,7 @@ var_table  %>%
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
 coef_damage = purrr::imap_dfr(models_2022[names(models_2022) != "baseline"], ~ extract_logSCN_effect(.x) %>% mutate(Model = .y)) %>% relocate(Model,.before = Resistance)
 
-write.csv(coef_damage, file = "results/damage/coef_damage_2022.csv", row.names = FALSE)
+write.csv(coef_damage, file = here("03_outputs","damage", "coef_damage_2022.csv"), row.names = FALSE)
 
 coef_damage %>%
  pretty_kable()
@@ -806,7 +807,7 @@ models_2023 = list(
   "tps"=tps)
 
 comparison_2023 = icREML(models_2023)
-write.csv(comparison_2023, file = "results/model_selection/comparison_2023.csv", row.names = FALSE)
+write.csv(comparison_2023, file = here("03_outputs","model_selection", "comparison_2023.csv"), row.names = FALSE)
 ```
 
 ```{r,echo=FALSE}
@@ -823,7 +824,7 @@ seed_trt=purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(seed_trt, file ="results/seed_trt/seed_trt_2023.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt" , "seed_trt_2023.csv"), row.names = FALSE)
 
 eff_st_2023 = purrr::map2_dfr(
   models_2023, names(models_2023),
@@ -848,7 +849,7 @@ cult = purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(cult, file ="results/cult_int/cult_int_2023.csv", row.names = FALSE)
+write.csv(cult, file = here("03_outputs","cult_int", "cult_int_2023.csv"), row.names = FALSE)
 
 eff_cult_2023 = purrr::map2_dfr(
   models_2023, names(models_2023),
@@ -870,7 +871,7 @@ var_table = imap_dfr(models_2023, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file = "results/variances/var_table_2023.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs","variances", "var_table_2023.csv"), row.names = FALSE)
 ```
 
 ```{r,echo=FALSE}
@@ -884,7 +885,7 @@ var_table  %>%
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
 coef_damage = purrr::imap_dfr(models_2023[names(models_2023) != "baseline"], ~ extract_logSCN_effect(.x) %>% mutate(Model = .y)) %>% relocate(Model,.before = Resistance)
 
-write.csv(coef_damage, file = "results/damage/coef_damage_2023.csv", row.names = FALSE)
+write.csv(coef_damage, file = here("03_outputs","damage","coef_damage_2023.csv"), row.names = FALSE)
 
 coef_damage %>%
  pretty_kable()
@@ -1028,7 +1029,7 @@ models_multi = list(
   "tps"=tps)
 
 comparison_multi = icREML(models_multi)
-write.csv(comparison_multi, file = "results/model_selection/comparison_multi.csv", row.names = FALSE)
+write.csv(comparison_multi, file =  here("03_outputs","model_selection", "comparison_multi.csv"), row.names = FALSE)
 ```
 
 ```{r,echo=FALSE}
@@ -1046,7 +1047,7 @@ seed_trt=purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error) %>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(seed_trt, file = "results/seed_trt/seed_trt_multi.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt", "seed_trt_multi.csv"), row.names = FALSE)
 
 eff_st_multi = purrr::map2_dfr(
   models_multi, names(models_multi),
@@ -1070,7 +1071,7 @@ seed_trt %>%
     relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error) %>%
     relocate(Reference,.before =predicted.value)
   
-  write.csv(cult, file ="results/cult_int/cult_int_multi.csv", row.names = FALSE)
+  write.csv(cult, file = here("03_outputs","cult_int", "cult_int_multi.csv"), row.names = FALSE)
   
   eff_cult_multi = purrr::map2_dfr(
     models_multi, names(models_multi),
@@ -1091,7 +1092,7 @@ var_table = imap_dfr(models_multi, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file = "results/variances/var_table_multi.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs","variances", "var_table_multi.csv"), row.names = FALSE)
 
 ```
 
@@ -1105,7 +1106,7 @@ var_table  %>%
 ```{r,echo=FALSE,warning=FALSE,message=FALSE}
 coef_damage = purrr::imap_dfr(models_multi[names(models_multi) != "baseline"], ~ extract_logSCN_effect(.x) %>% mutate(Model = .y)) %>% relocate(Model,.before = Resistance)
 
-write.csv(coef_damage, file ="results/damage/coef_damage_multi.csv", row.names = FALSE)
+write.csv(coef_damage, file = here("03_outputs","damage", "coef_damage_multi.csv"), row.names = FALSE)
 
 coef_damage %>%
  pretty_kable()
@@ -1150,7 +1151,7 @@ yield <- ggplot(dat1, aes(y = row, x = col, z = yield_dev)) +
   geom_contour_filled(breaks = unified_breaks, alpha = 0.9) +
   scale_fill_manual(
     values = cc, 
-    name = expression(atop("Seed yield deviation", paste("(kg ", ha^{-1}, ")"))),
+    name = expression(atop("Deviation from mean", atop("yield", paste("(kg ", ha^{-1}, ")")))),
     drop = FALSE
   ) +
   facet_grid(~year) +
@@ -1166,7 +1167,7 @@ trend <- ggplot(dat1, aes(y = row, x = col, z = total)) +
   geom_contour_filled(breaks = unified_breaks, alpha = 0.9) +
   scale_fill_manual(
     values = cc, 
-    name = expression(atop("Seed yield deviation", paste("(kg ", ha^{-1}, ")"))),
+    name = expression(atop("Deviation from mean", atop("yield", paste("(kg ", ha^{-1}, ")")))),
     drop = FALSE
   ) +
   facet_grid(~year) +
@@ -1185,7 +1186,7 @@ yield + trend +
   plot_annotation(tag_levels = "A")
 
 
-ggsave("results/fig_2.tiff", units = "in", width = 6, height = 5.5, bg = "white")
+ggsave(here("03_outputs","fig_2.tiff"), units = "in", width = 6, height = 5.5, bg = "white")
 
 ```
 **Figure 2**. Spatial patterns of soybean yield deviation and fitted spatial trends across two growing seasons (2022 and 2023). **A**, Yield deviation (kg ha⁻¹) from the environment mean, showing observed spatial heterogeneity.**B**, Fitted spatial trend (kg ha⁻¹) from the tensor-product penalized spline (TPS) model, representing the estimated spatial field variation. Both panels use filled contour plots with consistent color scales. Black grid lines indicate individual plot boundaries, and outer rectangles mark the field boundaries for each year.
@@ -1241,7 +1242,7 @@ ggplot(eff_data, aes(x = Model, y = Relative_Efficiency, group = Contrast, color
   ) +
   guides(color = guide_legend(title.position = "top", nrow = 3))
 
-ggsave("results/fig_4.tiff", units = "in", width = 7, height = 6, bg = "white")
+ggsave(here("03_outputs","fig_4.tiff"), units = "in", width = 6, height = 5, bg = "white")
 
 ```
 **Figure 4**. Relative efficiency of spatial models for estimating treatment contrasts. Relative efficiency (RE) is defined as the percent reduction in variance compared to a non-spatial baseline model (block + treatment effects only). Higher RE indicates greater precision gain. Three treatment contrasts are shown: Fluopyram vs. base (sub-plot), Peking vs. PI 88788 (whole-plot), and Peking + base vs. PI 88788 + fluopyram (sub-plot). Five spatial models were evaluated: SCN-adjusted (including pre-plant SCN density as a covariate), AR1, AR1 + nugget, TA (tensor-product additive), and TPS (tensor-product penalized spline). Model descriptions are provided in the Methods.

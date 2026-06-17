@@ -16,7 +16,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-[GitHub Repository](https://github.com/vcgarnica/SCN_spatial_inference)  
+[GitHub Repository](https://github.com/LopezNicoraLab/SCN_spatial_inference)  
 
 This file contains the full R workflow for processing and analyzing raw data, as well as generating figures for the manuscript. The Rmarkdown file can be downloaded from the *Code* drop down menu (top right).
 
@@ -37,6 +37,7 @@ knitr::opts_chunk$set(
 ```{r}
 
 required_packages = c(
+  "here",         # Locating files
   "tidyverse",    # Data manipulation and visualization
   "asreml",       # Mixed modeling
   "asremlPlus",   # Model diagnostics
@@ -50,7 +51,7 @@ invisible(lapply(required_packages, library, character.only = TRUE))
 asreml.options(gammaPar = TRUE)
 theme_set(theme_minimal(base_size = 12))
 
-source("functions.r")
+source(here("02_code", "functions.r"))
 
 tile_data = expand.grid(
   col = c(1.375, 2.125, 2.875, 3.625),  
@@ -67,7 +68,7 @@ cc = colorRampPalette(c(  "#1d3557",  "#457b9d","#f1faee","#b5838d", "#6d597a" )
 
 
 ```{r}
-dat = read_csv("pioneers.csv", show_col_types = FALSE)
+dat = read_csv(here("01_data", "pioneers.csv"), show_col_types = FALSE)
 
 dat = dat %>%
   mutate(
@@ -362,7 +363,7 @@ models_2022 = list(
   "tps"=tps)
 
 comparison_2022 = icREML(models_2022)
-write.csv(comparison_2022, file = "results/model_selection/comparison_2022_rf.csv", row.names = FALSE)
+write.csv(comparison_2022, file = here("03_outputs","model_selection", "comparison_2022_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -381,7 +382,7 @@ seed_trt=purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(seed_trt, file = "results/seed_trt/seed_trt_2022_rf.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt","seed_trt_2022_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -400,7 +401,7 @@ cult = purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(cult, file = "results/cult_int/cult_int_2022_rf.csv", row.names = FALSE)
+write.csv(cult, file = here("03_outputs","cult_int","cult_int_2022_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -417,7 +418,7 @@ var_table = imap_dfr(models_2022, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file =  "results/variances/var_table_2022_rf.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs", "variances", "var_table_2022_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -555,7 +556,7 @@ models_2023 = list(
   "tps"=tps)
 
 comparison_2023 = icREML(models_2023)
-write.csv(comparison_2023, file = "results/model_selection/comparison_2023_rf.csv", row.names = FALSE)
+write.csv(comparison_2023, file =here("03_outputs", "model_selection", "comparison_2023_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -574,7 +575,7 @@ seed_trt=purrr::map2_dfr(
   relocate(Reference,.before =predicted.value)
 
 
-write.csv(seed_trt, file = "results/seed_trt/seed_trt_2023_rf.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt", "seed_trt_2023_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -593,7 +594,7 @@ cult = purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(cult, file = "results/cult_int/cult_int_2023_rf.csv", row.names = FALSE)
+write.csv(cult, file = here("03_outputs","cult_int","cult_int_2023_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -609,7 +610,7 @@ var_table = imap_dfr(models_2023, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file = "results/variances/var_table_2023_rf.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs","variances", "var_table_2023_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -740,7 +741,7 @@ models_multi = list(
   "tps"=tps)
 
 comparison_multi = icREML(models_multi)
-write.csv(comparison_multi, file = "results/model_selection/comparison_multi_rf.csv", row.names = FALSE)
+write.csv(comparison_multi, file = here("03_outputs","model_selection", "comparison_multi_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -758,7 +759,7 @@ seed_trt=purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(seed_trt, file = "results/seed_trt/seed_trt_multi_rf.csv", row.names = FALSE)
+write.csv(seed_trt, file = here("03_outputs","seed_trt" ,"seed_trt_multi_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -776,7 +777,7 @@ cult = purrr::map2_dfr(
   relocate(lower.Confidence.limit,upper.Confidence.limit,.after = standard.error)%>%
   relocate(Reference,.before =predicted.value)
 
-write.csv(cult, file = "results/cult_int/cult_int_multi_rf.csv", row.names = FALSE)
+write.csv(cult, file = here("03_outputs","cult_int", "cult_int_multi_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -792,7 +793,7 @@ var_table = imap_dfr(models_multi, ~ extract_varcomps(.x) %>%
   dplyr::select(Component, Model, Formatted) %>%
   pivot_wider(names_from = Model, values_from = Formatted)
 
-write.csv(var_table, file = "results/variances/var_table_multi_rf.csv", row.names = FALSE)
+write.csv(var_table, file = here("03_outputs","variances","var_table_multi_rf.csv"), row.names = FALSE)
 ```
 
 ```{r, echo=TRUE}
@@ -842,8 +843,8 @@ rf=ggplot(dat1, aes(y = row, x = col, z = log_SCN_rf_dev)) +
   geom_contour_filled(breaks = unified_breaks, alpha = 0.9) +
   scale_fill_manual(
     values = cc, 
-            name = expression(atop("Deviation in SCN reproduction", 
-                           paste("factor [", italic(Rf) == log(italic(P)[italic(f)]/italic(P)[italic(i)]), "]"))),
+    name = expression(atop("Deviation from mean", 
+                   paste("ln(", italic(R)[italic(f)], ")"))),
     drop = FALSE
   ) +
   facet_grid(~year) +
@@ -860,8 +861,8 @@ rf=ggplot(dat1, aes(y = row, x = col, z = log_SCN_rf_dev)) +
   geom_contour_filled(breaks = unified_breaks, alpha = 0.9) +
   scale_fill_manual(
     values = cc, 
-    name = expression(atop("Deviation in SCN reproduction", 
-                     paste("factor [", italic(Rf) == log(italic(P)[italic(f)]/italic(P)[italic(i)]), "]"))),
+    name = expression(atop("Deviation from mean", 
+                   paste("ln(", italic(R)[italic(f)], ")"))),
     drop = FALSE
   ) +
   facet_grid(~year) +
@@ -878,7 +879,7 @@ rf + trend +
   plot_layout(axis_titles = "collect", guides = "collect") + 
   plot_annotation(tag_levels = "A")
 
-ggsave("results/fig_3.tiff", units = "in", width = 7, height = 5.5, bg = "white")
+ggsave(here("03_outputs","fig_3.tiff"), units = "in", width = 7, height = 5.5, bg = "white")
 
 ```
 
